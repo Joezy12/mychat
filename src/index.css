@@ -555,6 +555,10 @@ background-position: left;
 
 @media screen and (max-width: 1300px){
   
+  .sign-left h1 {
+    font-size: 34px;
+  }
+
 
   .login {
     background-position: center;
@@ -578,6 +582,9 @@ background-position: left;
 
 @media screen and (max-width: 600px){
   
+  .sign-left h1 {
+    font-size: 27px;
+  }
 
   .login {
     background-position: center;
