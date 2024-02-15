@@ -1,8 +1,16 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import { app, database} from "./firebaseConfig";
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import { collection, addDoc, getDocs, doc, updateDoc, setDoc } from "firebase/firestore";
+
 
 function Login() {
-
+    let [currentData, setCurrentData] = useState([])
+    let [myId, setMyId] = useState("");
+        const collectionRef = doc(database, 'users', 'userId');
+    let auth = getAuth();
+    const [change, setChange] = useState(false);
     
     const [formInfo, setFormInfo] = useState({
         gender: "",
@@ -11,6 +19,8 @@ function Login() {
         mate: "",
         city: "",
         phoneNumber: "",
+        userName: "",
+        password: "",
     });
 
     function gatherInfo(event) {
@@ -23,6 +33,68 @@ function Login() {
 
         console.log(formInfo)
     }
+
+    
+
+    function addData(userId) {
+        const collectionRef = doc(database, 'users', userId);
+        setDoc(collectionRef,  {
+           
+                    gender:formInfo.gender,
+                age: formInfo.age,
+                email: formInfo.email,
+                mate: formInfo.mate,
+                city: formInfo.city,
+                phoneNumber: formInfo.phoneNumber,
+                userName: formInfo.userName,
+ 
+        })
+        .then((data)=> {
+            alert("data added");
+            console.log(data.id)
+        })
+        .catch((err)=> {
+            alert(err.message)
+        })
+    }
+
+
+    function getData() {
+        getDocs(collectionRef)
+        .then((response)=> {
+            setCurrentData(response.docs.map((item)=> {
+                return item.data().allUsers;
+            }));
+            
+            
+        })
+    }
+
+
+    function handleSubmit() {
+        createUserWithEmailAndPassword(auth, formInfo.email, formInfo.password)
+        .then((response)=> {
+            setMyId(response.user.uid)
+            console.log(myId);
+            alert("successful");
+            addData(response.user.uid)
+        })
+        .catch((error) => {
+            alert(error.message);
+           
+        })
+    }
+
+    
+    function submitter(event) {
+        event.preventDefault();
+        if(change) {
+            handleSubmit();
+        }else{
+            setChange(true)
+        }
+    }
+
     return (
         <section className="login">
             <div className="sign-nav">
@@ -46,8 +118,11 @@ function Login() {
                     <form className="login-form" >
                         <h1>START NOW</h1>
                         <p>Your perfect match is just a click away</p>
-                        <div className="form-info">
-                            <div className="info">
+                        {change ? <div className="info">
+                           <input type="text" placeholder="Create username" name="userName" onChange={gatherInfo} />
+                           <input type="text" placeholder="Create password" name="password" onChange={gatherInfo}/>
+                        </div> : <div className="form-info">
+                        <div className="info">
                                 <select name="gender" id="" onChange={gatherInfo}>
                                     <option>I am a</option>
                                     <option>Man</option>
@@ -74,10 +149,9 @@ function Login() {
                                 </select>
                                 <input type="text" placeholder="City" name="city" onChange={gatherInfo}/>
                                 <input type="number" placeholder="Phone" name="phoneNumber" onChange={gatherInfo} />
-                            </div>
-                        </div>
+                            </div></div>}
                         <div className="log-btn">
-                            <button>SUBMIT</button>
+                            <button onClick={submitter}>SUBMIT</button>
                         </div>
                         <div className="para">
                             <p>Many singles are searching for relationship, dive in now and</p>
