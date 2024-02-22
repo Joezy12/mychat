@@ -1,13 +1,28 @@
-import React from "react";
-import Sidebar from "./sidebar";
+import Hero from "./hero";
+import Navbar from "./navbar";
+import SatisfiedCustomers from "./satisfiedCustomers";
+import Partners from "./partners";
+import Steps from "./steps";
+import Flexibilty from "./flexibilty";
+import InvestmentPlan from "./investmentPlan";
+import Review from "./review";
+import WorldMap from "./worldMap";
 
+function HomePage() {
 
-function Homepage() {
     return (
-        <section className="homepage">
-        <Sidebar />
-        </section>
+        <div className="homepage">
+        <Navbar />
+        <Hero />
+        <SatisfiedCustomers />
+        <Partners />
+        <Steps />
+        <Flexibilty />
+        <InvestmentPlan />
+        <Review />
+        <WorldMap />
+        </div>
     )
 }
 
-export default Homepage;
+export default HomePage;
